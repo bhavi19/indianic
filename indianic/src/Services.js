@@ -33,6 +33,15 @@ export const signin = async (payload) => {
     }
 };
 
+export const signup = async (payload) => {
+    try {
+        const response = await instance.post('/register', payload);
+        console.log("response:", response)
+
+    } catch (error) {
+        console.error('Error fetching data: ', error);
+    }
+}
 
 export const fetchUsers = async () => {
     try {

@@ -69,7 +69,7 @@ const Dashboard = () => {
                     />
                     <button className="btn btn-danger btn-sm" style={{ height: "40px", marginTop: "13px" }} onClick={handleSearch}>Search</button>
                     {isAdmin && <div style={{ paddingLeft: "430px" }}>
-                        <button className="btn btn-danger btn-sm" >Add User</button>
+                        <button className="btn btn-danger btn-sm" onClick={() => navigate("/user-form")}>Add User</button>
                     </div>}
                 </div>
 

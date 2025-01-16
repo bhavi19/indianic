@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { Form, Button, Col, Row } from 'react-bootstrap';
 import { useLocation, useNavigate } from 'react-router';
-import { updateUserDetails } from '../Services';
+import { signup, updateUserDetails } from '../Services';
 
-const UserForm = (props) => {
+const UserForm = () => {
     const location = useLocation()
     const navigate = useNavigate()
 
-    const editData = location.state
+    const editData = location.state || {}
+
     const [formData, setFormData] = useState({
         name: editData.name,
         email: editData.email,
@@ -26,14 +27,27 @@ const UserForm = (props) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        try {
-            updateUserDetails(editData._id, formData)
-            window.alert("User updated successfully.")
-            navigate("/dashboard")
+        if (editData.email) {
+            try {
+                updateUserDetails(editData._id, formData)
+                window.alert("User updated successfully.")
+                navigate("/dashboard")
 
-        } catch (error) {
-            window.alert("Something went wrong")
+            } catch (error) {
+                window.alert("Something went wrong")
+            }
+        } else {
+
+            try {
+                signup(formData)
+                window.alert("User added successfully.")
+                navigate("/dashboard")
+
+            } catch (error) {
+                window.alert("Something went wrong")
+            }
         }
+
     };
 
     return (
@@ -67,10 +81,25 @@ const UserForm = (props) => {
                             value={formData.email}
                             onChange={handleChange}
                             required
-                            disabled
+                            disabled={!editData}
                         />
                     </Form.Group>
                 </Row>
+
+                {!editData.email && <Row>
+                    <Form.Group as={Col} controlId="formEmail">
+                        <Form.Label>Password</Form.Label>
+                        <Form.Control
+                            type="password"
+                            placeholder="Enter your password"
+                            name="password"
+                            value={formData.password}
+                            onChange={handleChange}
+                            required
+                        // disabled={!editData}
+                        />
+                    </Form.Group>
+                </Row>}
 
                 <Row>
 
@@ -125,10 +154,12 @@ const UserForm = (props) => {
                     />
                 </Form.Group>
 
-                <Button variant="primary" style={{ marginTop: "20px" }} type="submit">
+                {editData.email ? <Button variant="primary" style={{ marginTop: "20px" }} type="submit">
                     Update
-                </Button>
-                <Button variant="secondary" style={{ marginTop: "20px", marginLeft:"20px" }} onClick={() => navigate("/dashboard")}>
+                </Button> : <Button variant="primary" style={{ marginTop: "20px" }} type="submit">
+                    Save
+                </Button>}
+                <Button variant="secondary" style={{ marginTop: "20px", marginLeft: "20px" }} onClick={() => navigate("/dashboard")}>
                     Back
                 </Button>
             </Form>
