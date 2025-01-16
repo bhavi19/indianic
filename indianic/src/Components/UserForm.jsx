@@ -97,7 +97,6 @@ const UserForm = () => {
                     </Form.Group>
                 </Row>
 
-
                 {/* Date of Birth Field */}
                 <Form.Group controlId="formDOB">
                     <Form.Label>Date of Birth</Form.Label>

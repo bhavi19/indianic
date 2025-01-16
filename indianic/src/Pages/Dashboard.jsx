@@ -1,8 +1,10 @@
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 import PopUpModal from '../Components/Modal/Modal';
 import Header from '../Components/Header/Header';
+import { deleteUser, fetchUsers } from '../Services';
 
 const Dashboard = () => {
     const navigate = useNavigate()
@@ -17,6 +19,7 @@ const Dashboard = () => {
     const [searchValue, setSearchValue] = useState("");
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [tableData, setTableData] = useState(data)
+    const [selectedId, setSelectedId] = useState()
 
     const isAdmin = localStorage.getItem("isAdmin")
 
@@ -26,6 +29,30 @@ const Dashboard = () => {
         );
         setTableData(filteredTableData)
     };
+
+    useEffect(() => {
+        fetchUsers().then((res) => {
+            console.log(res)
+            setTableData(res)
+        })
+    }, [])
+
+    const handleDelete = async () => {
+        try {
+            deleteUser(selectedId)
+            console.log("Deleted the user")
+        } catch (error) {
+            console.log("something went wrong")
+        }
+
+    }
+
+    const handleModalOpen = (id) => {
+        console.log(id)
+        setSelectedId(id)
+        setIsModalOpen(true)
+    }
+
 
     return (
         <div>
@@ -69,10 +96,10 @@ const Dashboard = () => {
                                 <td>{item.email}</td>
                                 <td>{item.gender}</td>
                                 <td>{item.role}</td>
-                                <td>{item.status}</td>
+                                <td style={{ color: item.status == "Active" ? "green" : "red" }}>{item.status}</td>
                                 <td style={{ display: "flex", gap: "10px" }}>
                                     <button className="btn btn-primary btn-sm mr-2" onClick={() => { navigate("/user-form") }}>Edit</button>
-                                    <button className="btn btn-danger btn-sm" onClick={() => { setIsModalOpen(true) }}>Delete</button>
+                                    <button className="btn btn-danger btn-sm" onClick={() => handleModalOpen(item._id)}>Delete</button>
 
                                 </td>
                             </tr>
@@ -81,7 +108,7 @@ const Dashboard = () => {
                 </table>
 
             </div>
-            <PopUpModal show={isModalOpen} onClose={() => setIsModalOpen(false)} onConfirm={() => console.log("delete")} />
+            <PopUpModal show={isModalOpen} onClose={() => setIsModalOpen(false)} onConfirm={handleDelete} />
         </div>
 
     );

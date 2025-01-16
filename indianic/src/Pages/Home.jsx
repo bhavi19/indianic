@@ -5,8 +5,8 @@ const Home = () => {
     return (
         <>  <Header />
             <div style={{ textAlign: "center" }}>
-
-                <h1>Welcome to the Home Page</h1>
+                <h1 style={{ color: 'turquoise' }}>Home page</h1>
+                <h1>Public content here</h1>
             </div>
         </>
     );
