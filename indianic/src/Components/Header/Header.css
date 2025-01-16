@@ -1,0 +1,6 @@
+
+.navbar-nav .nav-link.active {
+    color: #ff5733 !important;  /* Active link color */
+    font-weight: bold;  /* Bold the active link */
+    background-color: #f8f9fa !important;  /* Optional: change background */
+  }

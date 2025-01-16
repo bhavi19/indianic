@@ -22,7 +22,6 @@ const RegisterForm = () => {
     // Handle form submission
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log('Form Data Submitted:', formData);
     };
 
     return (

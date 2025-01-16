@@ -25,10 +25,10 @@ function App() {
 
             <Route path="/" exact element={<Home />}></Route>
             <Route path="/login" element={<Login />}></Route>
-            {/* <Route path="/dashboard" element={<PrivateRoute element={<Dashboard />} isAuthenticated={isLoggedIn} />}></Route>
-            <Route path="/user-form" element={<PrivateRoute element={<UserForm />} isAuthenticated={isLoggedIn} />}></Route> */}
-            <Route path="/dashboard" exact element={<Dashboard />}></Route>
-            <Route path="/user-form" element={<UserForm />}></Route>
+            <Route path="/dashboard" element={<PrivateRoute element={<Dashboard />} isAuthenticated={isLoggedIn} />}></Route>
+            <Route path="/user-form" element={<PrivateRoute element={<UserForm />} isAuthenticated={isLoggedIn} />}></Route>
+            {/* <Route path="/dashboard" exact element={<Dashboard />}></Route>
+            <Route path="/user-form" element={<UserForm />}></Route> */}
 
             <Route path="*" element={<Home />}></Route>
           </Routes>

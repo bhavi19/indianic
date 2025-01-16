@@ -4,7 +4,6 @@ const jwt = require("jsonwebtoken")
 const SECRET_KEY = "USERAPI";
 
 const register = async (req, res) => {
-    // console.log("request",req)
 
     const { email, password, role, gender, name, dateOfBirth } = req.body;
     try {
@@ -45,13 +44,12 @@ const signin = async (req, res) => {
         if (!existingUser) {
             return res.status(400).json({ mesaage: "User NOT found" })
         }
-
         const matchPassword = await bcrypt.compare(password, existingUser.password)
         if (!matchPassword) {
             return res.status(400).json({ message: "Invalid password" })
         }
         const token = jwt.sign({ email: existingUser.email, id: existingUser._id }, SECRET_KEY)
-        res.status(201).json({ user: existingUser, token: token })
+        res.status(201).json({ user: existingUser, token: token, message: "signed in" })
 
     } catch (error) {
         console.log(error);
@@ -84,10 +82,11 @@ const selectedUser = async (req, res) => {
 
 const deleteUser = async (req, res) => {
 
-    const { _id } = req.body
+    // const { _id } = req.body
+    const { id } = req.params
 
     try {
-        const userIdDetails = await usersModel.findOne({ id: _id });
+        const userIdDetails = await usersModel.findOne({ _id: id });
 
         userIdDetails.status = "Inactive";
 
@@ -104,25 +103,24 @@ const deleteUser = async (req, res) => {
 }
 
 const updateUserDetails = async (req, res) => {
-    const { _id, email, password, role, gender, status, dateOfBirth, name } = req.body
+    // console.log("request:", req)
+    const { email, role, gender, status, dateOfBirth, name } = req.body
+    const { id } = req.params
     try {
-        const userIdDetails = await usersModel.findOne({ id: _id });
+        let userIdDetails = await usersModel.findOne({ _id: id });
 
         userIdDetails.status = "Inactive";
-
-        const result = await usersModel.create({
-            email: email,
-            role: role,
-            gender: gender,
-            status: status,
-            name: name,
-            dateOfBirth: dateOfBirth
-        })
+        // userIdDetails.email = email;
+        userIdDetails.name = name;
+        userIdDetails.role = role;
+        userIdDetails.gender = gender;
+        userIdDetails.dateOfBirth = dateOfBirth;
+        userIdDetails.status = status
 
         await userIdDetails.save()
         res.status(200).send({
             message: `User deatils updated Successfully`,
-            userIdDetails: result
+            userIdDetails: userIdDetails
         });
 
     } catch (error) {
@@ -132,4 +130,4 @@ const updateUserDetails = async (req, res) => {
 }
 
 
-module.exports = { register, signin, usersAll, deleteUser, updateUserDetails,selectedUser }
+module.exports = { register, signin, usersAll, deleteUser, updateUserDetails, selectedUser }

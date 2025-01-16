@@ -1,11 +1,19 @@
 import React, { useState } from 'react';
 import { Form, Button, Col, Row } from 'react-bootstrap';
+import { useLocation, useNavigate } from 'react-router';
+import { updateUserDetails } from '../Services';
 
-const UserForm = () => {
+const UserForm = (props) => {
+    const location = useLocation()
+    const navigate = useNavigate()
+
+    const editData = location.state
     const [formData, setFormData] = useState({
-        name: '',
-        email: '',
-        password: ''
+        name: editData.name,
+        email: editData.email,
+        role: editData.role,
+        gender: editData.gender,
+        dateOfBirth: editData.dateOfBirth
     });
 
     const handleChange = (e) => {
@@ -18,8 +26,14 @@ const UserForm = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log('Form Data Submitted:', formData);
-        // Add form submission logic here
+        try {
+            updateUserDetails(editData._id, formData)
+            window.alert("User updated successfully.")
+            navigate("/dashboard")
+
+        } catch (error) {
+            window.alert("Something went wrong")
+        }
     };
 
     return (
@@ -37,6 +51,7 @@ const UserForm = () => {
                             value={formData.name}
                             onChange={handleChange}
                             required
+
                         />
                     </Form.Group>
                 </Row>
@@ -52,6 +67,7 @@ const UserForm = () => {
                             value={formData.email}
                             onChange={handleChange}
                             required
+                            disabled
                         />
                     </Form.Group>
                 </Row>
@@ -80,7 +96,7 @@ const UserForm = () => {
                             label="Male"
                             name="gender"
                             value="Male"
-                            checked={formData.gender === 'Male'}
+                            checked={formData.gender == 'Male'}
                             onChange={handleChange}
                             inline
                         />
@@ -89,7 +105,7 @@ const UserForm = () => {
                             label="Female"
                             name="gender"
                             value="Female"
-                            checked={formData.gender === 'Female'}
+                            checked={formData.gender == 'Female'}
                             onChange={handleChange}
                             inline
                         />
@@ -103,14 +119,17 @@ const UserForm = () => {
                     <Form.Control
                         type="date"
                         name="dob"
-                        value={formData.dob}
+                        value={formData.dateOfBirth}
                         onChange={handleChange}
-                        required
+
                     />
                 </Form.Group>
 
                 <Button variant="primary" style={{ marginTop: "20px" }} type="submit">
-                    Register
+                    Update
+                </Button>
+                <Button variant="secondary" style={{ marginTop: "20px", marginLeft:"20px" }} onClick={() => navigate("/dashboard")}>
+                    Back
                 </Button>
             </Form>
         </div >

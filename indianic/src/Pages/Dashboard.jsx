@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import moment from 'moment';
 import { useNavigate } from "react-router-dom";
 import PopUpModal from '../Components/Modal/Modal';
 import Header from '../Components/Header/Header';
@@ -32,23 +32,22 @@ const Dashboard = () => {
 
     useEffect(() => {
         fetchUsers().then((res) => {
-            console.log(res)
             setTableData(res)
         })
-    }, [])
+    }, [isModalOpen])
 
     const handleDelete = async () => {
         try {
             deleteUser(selectedId)
-            console.log("Deleted the user")
+            window.alert("User de activated.")
+            setIsModalOpen(false)
         } catch (error) {
-            console.log("something went wrong")
+            window.alert("Something went wrong")
         }
 
     }
 
     const handleModalOpen = (id) => {
-        console.log(id)
         setSelectedId(id)
         setIsModalOpen(true)
     }
@@ -79,6 +78,7 @@ const Dashboard = () => {
                 <table className="table table-striped table-bordered">
                     <thead>
                         <tr>
+                            <th>ID</th>
                             <th>Name</th>
                             <th>Date of Birth</th>
                             <th>Email</th>
@@ -91,14 +91,15 @@ const Dashboard = () => {
                     <tbody>
                         {tableData.map((item, index) => (
                             <tr key={index}>
+                                <td>{item._id}</td>
                                 <td>{item.name}</td>
-                                <td>{item.dob}</td>
+                                <td>{moment(item.dateOfBirth).format("MMM Do YY")}</td>
                                 <td>{item.email}</td>
                                 <td>{item.gender}</td>
                                 <td>{item.role}</td>
                                 <td style={{ color: item.status == "Active" ? "green" : "red" }}>{item.status}</td>
                                 <td style={{ display: "flex", gap: "10px" }}>
-                                    <button className="btn btn-primary btn-sm mr-2" onClick={() => { navigate("/user-form") }}>Edit</button>
+                                    <button className="btn btn-primary btn-sm mr-2" onClick={() => { navigate("/user-form", { state: item }) }}>Edit</button>
                                     <button className="btn btn-danger btn-sm" onClick={() => handleModalOpen(item._id)}>Delete</button>
 
                                 </td>

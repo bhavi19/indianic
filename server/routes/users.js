@@ -1,6 +1,9 @@
 const express = require('express');
 const { register, signin, usersAll, deleteUser, updateUserDetails, selectedUser } = require('../Controllers/Users');
 const router = express.Router();
+const session = require("express-session");
+
+const sessionCheck = () => { console.log("Callaback") }
 
 router.post('/register', register);
 router.post('/signin', signin);

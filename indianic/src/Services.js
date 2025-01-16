@@ -12,12 +12,19 @@ const instance = axios.create({
 // You can add common headers or auth tokens here
 
 
-export const signin = async () => {
+export const signin = async (payload) => {
     try {
-        const response = await instance.post('/signin');
-        let AUTH_TOKEN = response.token
+        const response = await instance.post('/signin', payload);
+
+        let AUTH_TOKEN = response.data.token
         sessionStorage.setItem("token", AUTH_TOKEN)
-        instance.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+        if (AUTH_TOKEN) {
+            localStorage.setItem('token', AUTH_TOKEN);
+            payload.rememberMe == 'on' && localStorage.setItem('email', payload.email);
+            localStorage.setItem("isLoggedIn", true)
+            localStorage.setItem("isAdmin", response.data.role === "Admin" || response.data.role === "admin")
+        }
+
         return response.data;
     } catch (error) {
         console.error('Error fetching data: ', error);
@@ -28,7 +35,6 @@ export const signin = async () => {
 
 
 export const fetchUsers = async () => {
-    console.log(instance)
     try {
         const response = await instance.get('/users');
         return response.data;
@@ -40,7 +46,6 @@ export const fetchUsers = async () => {
 };
 
 export const deleteUser = async (id) => {
-    console.log(instance)
     try {
         const response = await instance.put(`updateStatus/${id}`);
         return response.data;
@@ -51,10 +56,9 @@ export const deleteUser = async (id) => {
     }
 };
 
-export const updateUserDetails = async (id) => {
-    console.log(instance)
+export const updateUserDetails = async (id, payload) => {
     try {
-        const response = await instance.put(`updateUser/${id}`);
+        const response = await instance.put(`updateUser/${id}`, payload);
         return response.data;
     } catch (error) {
         console.error('Error fetching data: ', error);
